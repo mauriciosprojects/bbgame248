@@ -8,7 +8,7 @@ The [BBGam248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBG
 
 # BBGame248 Coding Exercises
 
-This repository contains several coding exercises. All exercises Ex04 to Ex07b are exercises than can be done with a partially assembled LED matrix of 5x4 pixels. The remaining exercises require the fully assembled BBGame114 circuit with and LED matrix of 11x4 pixels.
+This repository contains several coding exercises. Exercises Ex01 to Ex07 are exercises than can be done with a partially assembled LED matrix of 8x8 pixels. The remaining exercises require the fully assembled BBGame248 circuit with and LED matrix of 24x8 pixels.
 
 | Number | Description |
 | --- | --- |
