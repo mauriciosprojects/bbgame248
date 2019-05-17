@@ -5,9 +5,9 @@ BBGame248 is handheld game device that consists of an Arduino Nano processor boa
 ![BBGame248 build diagram](https://github.com/mtejada11/BBGame248/blob/master/Build/BBGame248.png?raw=true)
 *Diagram of BBGame248 assembled on breadboard*
 
-# BBGam248 Arduino Library
+# BBGame248 Arduino Library
 
-The [BBGam248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBGame248Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame248 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame248Lib Library Reference](https://github.com/mtejada11/BBGame248/wiki/BBGame248Lib-Library-Reference) page for more information on this library. 
+The [BBGame248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBGame248Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame248 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame248Lib Library Reference](https://github.com/mtejada11/BBGame248/wiki/BBGame248Lib-Library-Reference) page for more information on this library. 
 
 # BBGame248 Coding Exercises
 
