@@ -2,9 +2,12 @@
 
 BBGame248 is handheld game device that consists of an Arduino Nano processor board, an LED matrix display, four input buttons and a piezoelectric speaker. This device can be programmed using the Arduino IDE. This GitHub repository contains the BBGame248Lib library that can be used for programming this device, and it also contains a Space Invaders-like game.
 
-# BBGam248 Arduino Library
+![BBGame248 build diagram](https://github.com/mtejada11/BBGame248/blob/master/Build/BBGame248.png?raw=true)
+*Diagram of BBGame248 assembled on breadboard*
 
-The [BBGam248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBGame248Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame248 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame248Lib Library Reference](https://github.com/mtejada11/BBGame248/wiki/BBGame248Lib-Library-Reference) page for more information on this library. 
+# BBGame248 Arduino Library
+
+The [BBGame248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBGame248Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame248 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame248Lib Library Reference](https://github.com/mtejada11/BBGame248/wiki/BBGame248Lib-Library-Reference) page for more information on this library. 
 
 # BBGame248 Coding Exercises
 
