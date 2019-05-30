@@ -2,7 +2,7 @@
 //========== BBGame248 Electronics/Coding Workshop Exercise 10d ==========
 
 //Purpose: Full game with score display
-//Date: April 15, 2019  
+//Date: May 17, 2019  
 
 #include "BBGame248.h"
 Display display;
@@ -22,17 +22,30 @@ ModeMenu menu;
 void setup()
 {
   display.Setup(24,8); 
+  display.Clear();
   buttons.Setup();
-  AddMessage("Hello");
+
+#define DEMOINTROx
+#ifdef DEMOINTRO
+  //ScrollMessage("Arduino");
+  delay(2000);  
+  ScrollMessage("Space Invaders");
+#else
+  AddMessage("Temuujin Tejada");
   menu.StartupCheck();
   
-  display.Clear();
-  textDisplay.DisplayTextCentered("INVADR");
+  textDisplay.DisplayTextCentered("INVADR");  
   int btnPressed = buttons.WaitAnyBtnPressed();
-
+  
   if ((btnPressed == BTN3) || (btnPressed == BTN4))
     menu.DoSelectionMenu();
- }
+#endif
+
+#define RECORDBUTTONSx
+#ifdef RECORDBUTTONS
+  Serial.begin(115200);
+#endif
+}
 
 
 //--- Global variables ---
@@ -49,6 +62,15 @@ int numShips = 5;
 int score = 0;
 bool scoreDisplayed = false;
 
+void ScrollMessage(String s)
+{
+  int n = textDisplay.getScrollWidth(s);
+  for(int i = 0; i < n; i++)
+  {
+    textDisplay.ScrollText(s,i);
+    delay(35);
+  }
+}
 
 //---------- Loop routine that runs repeatedly ----------
 
