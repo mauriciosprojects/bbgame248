@@ -240,10 +240,11 @@ Aliens::Aliens()
   numLevels = 0;
   SetGameLevels(defaultGameLevels);
 
-  //Get random numbers seed value from EEPROM location 10
+  //Get random numbers seed value from EEPROM
   byte rndSeed;
-  EEPROM.get(10, rndSeed);
+  EEPROM.get(EEPROM_RNDSEED, rndSeed);
   randomSeed(rndSeed);
+  randomSeed(0);
 }
 
 

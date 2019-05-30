@@ -42,13 +42,14 @@ public:
   void SetColumnByte(byte x, byte bits);
   void vLine(byte x, byte y1 = 255, byte y2 = 255);
   void hLine(byte y, byte x1 = 255, byte x2 = 255);
-  void hShift(byte dir = 0, bool wrap = false);
-  void vShift(byte dir = 0, bool wrap = false);
+  void hShift(signed char dir = -1, bool wrap = false);
+  void vShift(signed char dir = -1, bool wrap = false);
   byte numCols;
   byte numRows;
 
 private:
     void SetupTimedRefresh();
+    void hShiftRow(byte row, signed char dir, bool wrap);
 };
 
 #define ON  1
@@ -67,7 +68,6 @@ private:
 #define BTN2 1
 #define BTN3 3
 #define BTN4 2
-
 
 class Buttons
 {
@@ -90,7 +90,7 @@ private:
 // speaker on the the BBGame114 board.
 
 
-#define SNDPIN 10
+#define SNDPIN 5
 
 class Sound
 {

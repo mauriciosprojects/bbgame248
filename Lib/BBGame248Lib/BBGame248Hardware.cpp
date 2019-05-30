@@ -3,6 +3,7 @@
 
 //Date: May 14, 2019
 
+//#include <Serial.h>
 #include <EEPROM.h>
 #include "BBGame248.h"
 
@@ -73,9 +74,9 @@ public:
 
 private:
   byte numModules;
-  static const byte OUTPUT_PIN_CS     = 4;
+  static const byte OUTPUT_PIN_CS     = 2;
   static const byte OUTPUT_PIN_CLK    = 3;
-  static const byte OUTPUT_PIN_DATAIN = 2;
+  static const byte OUTPUT_PIN_DATAIN = 4;
   static const byte REGISTER_NOOP        = 0x00;
   static const byte REGISTER_DIGIT0      = 0x01;
   static const byte REGISTER_DIGIT1      = 0x02;
@@ -272,48 +273,72 @@ void Display::hLine(byte y, byte x1, byte x2)
 }
 
 
-void Display::hShift(byte dir, bool wrap)
+void Display::hShift(signed char dir, bool wrap)
 {
-  /*
-    signed char incr = (dir == 0) ? +1 : -1;
-    byte *p1 = (dir == 0) ? (displayBuffer+1) : (displayBuffer+numCols-2);
-    byte *p2 = p1 - incr;
-    byte *p0 = p2;
-    byte v0 = (wrap == false) ? 0 : (*p2);
-
-    for(byte i = 0; i < (numCols-1); i++)
-    {
-    (*p2) = (*p1);
-    p1 += incr;
-    p2 += incr;
-    }
-    (*p2) = v0;
-  */
+  for(byte row = 0; row < 8; row++)
+    hShiftRow(row, dir, wrap);
 }
 
 
-void Display::vShift(byte dir, bool wrap)
+void Display::hShiftRow(byte row, signed char dir, bool wrap)
 {
-  /*
-    byte shiftedOutBits;
+  byte savedBit = 0;
+  signed char i0;
 
-    for(byte i = 0; i < numCols; i++)
+  if (dir == +1)
+  {
+    i0 = (row * 3) + 0;
+    if (wrap) savedBit = displayBuffer[i0] & 0x01;
+    displayBuffer[i0+0] = (displayBuffer[i0+0] >> 1) | ((displayBuffer[i0+1] & 0x01) << 7);
+    displayBuffer[i0+1] = (displayBuffer[i0+1] >> 1) | ((displayBuffer[i0+2] & 0x01) << 7);
+    displayBuffer[i0+2] = (displayBuffer[i0+2] >> 1) | (savedBit << 7);
+  }
+  else if (dir == -1)
+  {
+    i0 = (row * 3) + 2;
+    if (wrap) savedBit = displayBuffer[i0] & 0x80;
+    displayBuffer[i0-0] = (displayBuffer[i0-0] << 1) | ((displayBuffer[i0-1] & 0x80) >> 7);
+    displayBuffer[i0-1] = (displayBuffer[i0-1] << 1) | ((displayBuffer[i0-2] & 0x80) >> 7);
+    displayBuffer[i0-2] = (displayBuffer[i0-2] << 1) | (savedBit >> 7);
+  }
+}
+
+
+void Display::vShift(signed char dir, bool wrap)
+{
+  signed char firstRow;
+  signed char increment;
+  byte savedBits;
+
+  if (dir == +1)
+  {
+    firstRow = 7;
+    increment = -3;
+  }
+  else if (dir == -1)
+  {
+    firstRow = 0;
+    increment = +3;
+  }
+  else
+    return;
+  
+  for(byte iModule = 0; iModule < 3; iModule++)
+  {
+    signed char index = (firstRow * 3) + iModule;
+    savedBits = displayBuffer[index];
+
+    for(byte i = 0; i < 7; i++)
     {
-    if (dir == 0)
-    {
-      shiftedOutBits = (displayBuffer[i] & 0x8) >> 3;
-      displayBuffer[i] <<= 1;
+      index += increment;
+      displayBuffer[index-increment] = displayBuffer[index];
     }
+
+    if(wrap)
+      displayBuffer[index] = savedBits;
     else
-    {
-      shiftedOutBits = (displayBuffer[i] & 0x1) << 3;
-      displayBuffer[i] >>= 1;
-    }
-
-    if (wrap == true)
-      displayBuffer[i] |= shiftedOutBits;
-    }
-  */
+      displayBuffer[index] = 0;
+  }
 }
 
 
@@ -334,7 +359,7 @@ void Display::SetupTimedRefresh()
   TCCR2B |= (1 << CS22); //111 - 1024 scaler, 0.064 ms increment
 
   //Set compare match register for 8khz increments
-  OCR2A = 120; //At 16 MHz, t = (255 + 1) * 0.064 ms = 16.384 ms
+  OCR2A = 130; //At 16 MHz, t = (255 + 1) * 0.064 ms = 16.384 ms
 
   //Enable timer interrupt on compare with OCR2A
   TIMSK2 |= (1 << OCIE2A);
@@ -364,6 +389,9 @@ SIGNAL(TIMER2_COMPA_vect)
 static const byte buttonPins[4] = { A0, 6, 8, 7 };
 
 
+extern int counter;
+
+
 void Buttons::Setup()
 {
   pinMode(buttonPins[0], INPUT);
@@ -382,6 +410,8 @@ void Buttons::Setup()
 
   for (byte i = 0; i < 4; i++)
     btnWasNotPressed[i] = true;
+
+  //Serial.begin(1152000);
 }
 
 
@@ -394,13 +424,153 @@ void Buttons::ReadButtons()
 }
 
 
+#define PLAYBACKBUTTONSx
+#define RECORDBUTTONSx
+
+#ifdef PLAYBACKBUTTONS
+int recordedPlaybackIndex = 0;
+static const int recordedButtonPresses[][2] = 
+{
+  { 63, 0 },
+  { 120, 0 },
+  { 223, 3 },
+  { 249, 3 },
+  { 270, 3 },
+  { 299, 0 },
+  { 330, 3 },
+  { 364, 0 },
+  { 389, 2 },
+  { 415, 2 },
+  { 435, 2 },
+  { 457, 2 },
+  { 479, 2 },
+  { 500, 2 },
+  { 522, 2 },
+  { 551, 0 },
+  { 577, 0 },
+  { 598, 0 },
+  { 619, 3 },
+  { 644, 0 },
+  { 672, 3 },
+  { 691, 0 },
+  { 711, 0 },
+  { 738, 3 },
+  { 766, 3 },
+  { 793, 3 },
+  { 805, 0 },
+  { 832, 0 },
+  { 857, 0 },
+  { 886, 0 },
+  { 906, 3 },
+  { 924, 0 },
+  { 950, 0 },
+  { 977, 0 },
+  { 1011, 3 },
+  { 1041, 3 },
+  { 1055, 0 },
+  { 1081, 0 },
+  { 1112, 2 },
+  { 1145, 2 },
+  { 1167, 2 },
+  { 1193, 2 },
+  { 1206, 0 },
+  { 1252, 3 },
+  { 1282, 0 },
+  { 1300, 0 },
+  { 1320, 0 },
+  { 1341, 0 },
+  { 1360, 0 },
+  { 1381, 0 },
+  { 1410, 3 },
+  { 1426, 0 },
+  { 1450, 0 },
+  { 1476, 0 },
+  { 1502, 0 },
+  { 1525, 0 },
+  { 1548, 0 },
+  { 1592, 3 },
+  { 1645, 0 },
+  { 1668, 0 },
+  { 1696, 0 },
+  { 1708, 2 },
+  { 1733, 2 },
+  { 1755, 2 },
+  { 1776, 2 },
+  { 1796, 0 },
+  { 1825, 0 },
+  { 1847, 2 },
+  { 1871, 2 },
+  { 1882, 0 },
+  { 1938, 3 },
+  { 1956, 0 },
+  { 1984, 0 },
+  { 2004, 3 },
+  { 2045, 3 },
+  { 2058, 3 },
+  { 2110, 0 },
+  { 2138, 0 },
+  { 2164, 0 },
+  { 2200, 3 },
+  { 2226, 0 },
+  { 2291, 0 },
+  { 2554, 0 },
+  { 2582, 0 },
+  { 2606, 0 },
+  { 2629, 0 },
+  { 2652, 0 },
+  { 2676, 0 },
+  { 2698, 0 },
+  { 2721, 3 },
+  { 2738, 0 },
+  { 2762, 0 },
+  { 2785, 0 },
+  { 2812, 0 },
+  { 2836, 0 },
+  { 2861, 0 },
+  { 2888, 0 },
+  { 2959, 2 },
+  { 2993, 2 },
+  { 3007, 2 },
+  { 3029, 2 },
+  { 3051, 2 },
+  { 3071, 2 },
+  { 3096, 0 },
+  { 3122, 0 },
+  { 3165, 3 },
+  { 3193, 0 },
+  { 3233, 0 },
+  { 3259, 3 },
+  { -1, -1 }
+};
+#endif
+
+
 bool Buttons::BtnPressed(byte i)
 {
+#ifdef PLAYBACKBUTTONS
+  if (recordedButtonPresses[recordedPlaybackIndex][0] != -1)
+  {
+    if (counter == recordedButtonPresses[recordedPlaybackIndex][0])
+    {
+      if (recordedButtonPresses[recordedPlaybackIndex][1] == i)
+      {
+        recordedPlaybackIndex++;
+        return true;
+      }
+    }
+  }
+#endif
+
   bool BtnPressedNow = BtnDown(i);
 
   if (btnWasNotPressed[i] && BtnPressedNow)
   {
     btnWasNotPressed[i] = false;
+#ifdef RECORDBUTTONS
+    Serial.print(counter);
+    Serial.print(" ");
+    Serial.println(i);
+#endif
     return true;
   }
   else
