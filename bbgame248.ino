@@ -25,13 +25,7 @@ void setup()
   display.Clear();
   buttons.Setup();
 
-#define DEMOINTROx
-#ifdef DEMOINTRO
-  //ScrollMessage("Arduino");
-  delay(2000);  
-  ScrollMessage("Space Invaders");
-#else
-  AddMessage("Temuujin Tejada");
+  AddMessage("HELLO");
   menu.StartupCheck();
   
   textDisplay.DisplayTextCentered("INVADR");  
@@ -39,12 +33,6 @@ void setup()
   
   if ((btnPressed == BTN3) || (btnPressed == BTN4))
     menu.DoSelectionMenu();
-#endif
-
-#define RECORDBUTTONSx
-#ifdef RECORDBUTTONS
-  Serial.begin(115200);
-#endif
 }
 
 

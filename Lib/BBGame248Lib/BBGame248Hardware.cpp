@@ -386,7 +386,7 @@ SIGNAL(TIMER2_COMPA_vect)
 // is not reset until the button is released.
 
 
-static const byte buttonPins[4] = { A0, 6, 8, 7 };
+static const byte buttonPins[4] = { A0, A5, A1, A2 };
 
 
 extern int counter;
@@ -399,19 +399,13 @@ void Buttons::Setup()
   pinMode(buttonPins[2], INPUT_PULLUP);
   pinMode(buttonPins[3], INPUT_PULLUP);
 
-  pinMode(A0, INPUT);
-  pinMode(A1, INPUT);
-  pinMode(A2, INPUT);
-  pinMode(A5, OUTPUT);
-  digitalWrite(A5, LOW);
-  pinMode(A7, INPUT);
+  pinMode(A4, OUTPUT);
+  digitalWrite(A4, LOW);
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
 
   for (byte i = 0; i < 4; i++)
     btnWasNotPressed[i] = true;
-
-  //Serial.begin(1152000);
 }
 
 
@@ -424,153 +418,13 @@ void Buttons::ReadButtons()
 }
 
 
-#define PLAYBACKBUTTONSx
-#define RECORDBUTTONSx
-
-#ifdef PLAYBACKBUTTONS
-int recordedPlaybackIndex = 0;
-static const int recordedButtonPresses[][2] = 
-{
-  { 63, 0 },
-  { 120, 0 },
-  { 223, 3 },
-  { 249, 3 },
-  { 270, 3 },
-  { 299, 0 },
-  { 330, 3 },
-  { 364, 0 },
-  { 389, 2 },
-  { 415, 2 },
-  { 435, 2 },
-  { 457, 2 },
-  { 479, 2 },
-  { 500, 2 },
-  { 522, 2 },
-  { 551, 0 },
-  { 577, 0 },
-  { 598, 0 },
-  { 619, 3 },
-  { 644, 0 },
-  { 672, 3 },
-  { 691, 0 },
-  { 711, 0 },
-  { 738, 3 },
-  { 766, 3 },
-  { 793, 3 },
-  { 805, 0 },
-  { 832, 0 },
-  { 857, 0 },
-  { 886, 0 },
-  { 906, 3 },
-  { 924, 0 },
-  { 950, 0 },
-  { 977, 0 },
-  { 1011, 3 },
-  { 1041, 3 },
-  { 1055, 0 },
-  { 1081, 0 },
-  { 1112, 2 },
-  { 1145, 2 },
-  { 1167, 2 },
-  { 1193, 2 },
-  { 1206, 0 },
-  { 1252, 3 },
-  { 1282, 0 },
-  { 1300, 0 },
-  { 1320, 0 },
-  { 1341, 0 },
-  { 1360, 0 },
-  { 1381, 0 },
-  { 1410, 3 },
-  { 1426, 0 },
-  { 1450, 0 },
-  { 1476, 0 },
-  { 1502, 0 },
-  { 1525, 0 },
-  { 1548, 0 },
-  { 1592, 3 },
-  { 1645, 0 },
-  { 1668, 0 },
-  { 1696, 0 },
-  { 1708, 2 },
-  { 1733, 2 },
-  { 1755, 2 },
-  { 1776, 2 },
-  { 1796, 0 },
-  { 1825, 0 },
-  { 1847, 2 },
-  { 1871, 2 },
-  { 1882, 0 },
-  { 1938, 3 },
-  { 1956, 0 },
-  { 1984, 0 },
-  { 2004, 3 },
-  { 2045, 3 },
-  { 2058, 3 },
-  { 2110, 0 },
-  { 2138, 0 },
-  { 2164, 0 },
-  { 2200, 3 },
-  { 2226, 0 },
-  { 2291, 0 },
-  { 2554, 0 },
-  { 2582, 0 },
-  { 2606, 0 },
-  { 2629, 0 },
-  { 2652, 0 },
-  { 2676, 0 },
-  { 2698, 0 },
-  { 2721, 3 },
-  { 2738, 0 },
-  { 2762, 0 },
-  { 2785, 0 },
-  { 2812, 0 },
-  { 2836, 0 },
-  { 2861, 0 },
-  { 2888, 0 },
-  { 2959, 2 },
-  { 2993, 2 },
-  { 3007, 2 },
-  { 3029, 2 },
-  { 3051, 2 },
-  { 3071, 2 },
-  { 3096, 0 },
-  { 3122, 0 },
-  { 3165, 3 },
-  { 3193, 0 },
-  { 3233, 0 },
-  { 3259, 3 },
-  { -1, -1 }
-};
-#endif
-
-
 bool Buttons::BtnPressed(byte i)
 {
-#ifdef PLAYBACKBUTTONS
-  if (recordedButtonPresses[recordedPlaybackIndex][0] != -1)
-  {
-    if (counter == recordedButtonPresses[recordedPlaybackIndex][0])
-    {
-      if (recordedButtonPresses[recordedPlaybackIndex][1] == i)
-      {
-        recordedPlaybackIndex++;
-        return true;
-      }
-    }
-  }
-#endif
-
   bool BtnPressedNow = BtnDown(i);
 
   if (btnWasNotPressed[i] && BtnPressedNow)
   {
     btnWasNotPressed[i] = false;
-#ifdef RECORDBUTTONS
-    Serial.print(counter);
-    Serial.print(" ");
-    Serial.println(i);
-#endif
     return true;
   }
   else
