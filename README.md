@@ -4,11 +4,11 @@
 
 The main program [bbgame.ino](https://github.com/mtejada11/BBGame248/blob/master/bbgame248.ino) contains a space invaders-like game that uses the BBGame248 library to demonstrate the use of text and graphics on the 24x8 LED matrix. The coding examples below show other types of programs that can be written.
 
-# BBGame248 Arduino Library
+## BBGame248 Arduino Library
 
 The [BBGame248Lib.zip](https://github.com/mtejada11/BBGame248/blob/master/Lib/BBGame248Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame248 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame248Lib Library Reference](https://github.com/mtejada11/BBGame248/wiki/BBGame248Lib-Library-Reference) page for more information on this library. 
 
-# BBGame248 Coding Exercises
+## BBGame248 Coding Exercises
 
 This repository contains several coding exercises. Exercises Ex01 to Ex07 are exercises than can be done with a partially assembled LED matrix of 8x8 pixels. The remaining exercises require the fully assembled BBGame248 circuit with and LED matrix of 24x8 pixels.
 
