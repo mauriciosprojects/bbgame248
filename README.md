@@ -2,7 +2,7 @@
 
 ## Code
 
-The main program <b>bbgame.ino</b> contains a space invaders-like game that uses the BBGame248 library to demonstrate the use of text and graphics on the 24x8 LED matrix. The coding examples below show other types of programs that can be written.
+The main program [bbgame.ino](https://github.com/mtejada11/BBGame248/blob/master/bbgame248.ino) contains a space invaders-like game that uses the BBGame248 library to demonstrate the use of text and graphics on the 24x8 LED matrix. The coding examples below show other types of programs that can be written.
 
 # BBGame248 Arduino Library
 
